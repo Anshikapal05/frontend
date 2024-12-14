@@ -22,20 +22,22 @@ const App = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(
+        const token = localStorage.getItem("token");
+        const { data } = await axios.get(
           "https://backend-ten-olive.vercel.app/api/v1/user/getuser",
           {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, // Include the token
+            },
             withCredentials: true,
           }
         );
-        setUser(response.data.user);
-        setIsAuthorized(true);
+        console.log(data.user);
       } catch (error) {
-        setIsAuthorized(false);
+        console.error(error.response?.data?.message || "Failed to fetch user");
       }
     };
-    fetchUser();
-  }, [isAuthorized]);
 
   return (
     <>
