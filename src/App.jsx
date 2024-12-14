@@ -20,10 +20,18 @@ import MyJobs from "./components/Job/MyJobs";
 const App = () => {
   const { isAuthorized, setIsAuthorized, setUser } = useContext(Context);
 
+  // Helper function to get a cookie by name
+  const getCookie = (name) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return null;
+  };
+
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const token = localStorage.getItem("token"); // Get the token from localStorage
+        const token = getCookie("token"); // Fetch the token from cookies
         if (!token) {
           setIsAuthorized(false);
           return;
@@ -36,7 +44,7 @@ const App = () => {
               Authorization: `Bearer ${token}`, // Include the token in the Authorization header
               "Content-Type": "application/json",
             },
-            withCredentials: true,
+            withCredentials: true, // Ensure credentials (cookies) are sent
           }
         );
 
